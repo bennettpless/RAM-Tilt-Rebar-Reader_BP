@@ -135,7 +135,7 @@ def plot_verticals(v_data, v_fig, l_size=10, f_size=12):
             x = (x_values[int(rebar[0])+1] - x_values[int(rebar[0])])/2 + x_values[int(rebar[0])]
             r_size = int(rebar[2])+2
             r_area = r_areas(rebar)
-            line = v_fig.plot([x,x],[rebar[5],rebar[6]], ls='-', label=f'({int(rebar[1])}) #{r_size} @ {round(rebar[4]*12)} in {r_area}')
+            line = v_fig.plot([x,x],[rebar[5],rebar[6]], ls='-', label=f'({int(rebar[1])}) #{r_size} @ {round(rebar[4])} in {r_area}')
             xdata, ydata = line[0].get_data()
             v_fig.annotate('',xy=(x_values[int(rebar[0])+1], mean(ydata)), xytext=(x_values[int(rebar[0])], mean(ydata)), arrowprops=dict(color=line[0].get_color(),arrowstyle='|-|'))
             v_fig.annotate(line[0].get_label().replace('@','\n@'), xy=(xdata[0], mean(ydata)), rotation=90, fontsize = f_size, ha='center', va='center', bbox=dict(facecolor='white', edgecolor=line[0].get_color()))
@@ -190,7 +190,7 @@ def plot_horizontals(h_data, h_fig,  f_size=12):
                 case _ if (x2-x1) <= 4:
                     h_label = f'#3 Ties @7 in'
                 case _:
-                    h_label = f'({int(rebar[0])}) #{r_size} @ {round(rebar[3]*12)} in {r_areas(rebar)}'
+                    h_label = f'({int(rebar[0])}) #{r_size} @ {round(rebar[3])} in {r_areas(rebar)}'
 
             line = h_fig.plot([x1,x2],[y,y], ls='-', label=h_label)
             if f'#{4} @ {18} in' not in h_label:
