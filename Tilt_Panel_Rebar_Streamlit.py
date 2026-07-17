@@ -94,6 +94,16 @@ def r_areas(rbr):
     return reb_area
 
 
+#%% Spacing unit multiplier based on RAM version
+def spacing_mult(data):
+    # ProgramVersion 26+ stores rebar spacing in inches; older versions use feet
+    try:
+        major = int(str(data['ProgramVersion']).split('.')[0])
+    except (ValueError, KeyError, TypeError):
+        return 12
+    return 1 if major >= 26 else 12
+
+
 #%% How to plot the vertical rebar
 def plot_verticals(v_data, v_fig, l_size=10, f_size=12):
     panel_geom(v_data, v_fig)
@@ -119,6 +129,7 @@ def plot_verticals(v_data, v_fig, l_size=10, f_size=12):
         h_offset = 1
         
     # Section for Vertical rebar
+    sp_mult = spacing_mult(v_data)
     n = int(v_data['DataVBarsCount'])
     if n != 0:
         # Split the string into a list
@@ -135,7 +146,7 @@ def plot_verticals(v_data, v_fig, l_size=10, f_size=12):
             x = (x_values[int(rebar[0])+1] - x_values[int(rebar[0])])/2 + x_values[int(rebar[0])]
             r_size = int(rebar[2])+2
             r_area = r_areas(rebar)
-            line = v_fig.plot([x,x],[rebar[5],rebar[6]], ls='-', label=f'({int(rebar[1])}) #{r_size} @ {round(rebar[4])} in {r_area}')
+            line = v_fig.plot([x,x],[rebar[5],rebar[6]], ls='-', label=f'({int(rebar[1])}) #{r_size} @ {round(rebar[4]*sp_mult)} in {r_area}')
             xdata, ydata = line[0].get_data()
             v_fig.annotate('',xy=(x_values[int(rebar[0])+1], mean(ydata)), xytext=(x_values[int(rebar[0])], mean(ydata)), arrowprops=dict(color=line[0].get_color(),arrowstyle='|-|'))
             v_fig.annotate(line[0].get_label().replace('@','\n@'), xy=(xdata[0], mean(ydata)), rotation=90, fontsize = f_size, ha='center', va='center', bbox=dict(facecolor='white', edgecolor=line[0].get_color()))
@@ -167,6 +178,7 @@ def plot_horizontals(h_data, h_fig,  f_size=12):
         h_offset = 1
         
     # Section for Horizontal rebar
+    sp_mult = spacing_mult(h_data)
     n = int(h_data['DataHBarsCount'])
     if n != 0:
         # Split the string into a list
@@ -190,7 +202,7 @@ def plot_horizontals(h_data, h_fig,  f_size=12):
                 case _ if (x2-x1) <= 4:
                     h_label = f'#3 Ties @7 in'
                 case _:
-                    h_label = f'({int(rebar[0])}) #{r_size} @ {round(rebar[3])} in {r_areas(rebar)}'
+                    h_label = f'({int(rebar[0])}) #{r_size} @ {round(rebar[3]*sp_mult)} in {r_areas(rebar)}'
 
             line = h_fig.plot([x1,x2],[y,y], ls='-', label=h_label)
             if f'#{4} @ {18} in' not in h_label:
@@ -208,7 +220,7 @@ with placeholder:
     uploaded_files = st.file_uploader("Choose files from a folder", accept_multiple_files=True, type=accepted_ftype)
 
 # Define a list of items to look for in each line
-items = ['PanelType', 'ParapetHeight', 'BottomPanelHeight', 'PanelHeight', 'PanelLength', 'PanelThickness', 'PanelMaterial', 'Openings', 'DataVBarsCount', 'DataVBarsVBars','DataHBarsCount', 'DataHBarsHBars']
+items = ['PanelType', 'ParapetHeight', 'BottomPanelHeight', 'PanelHeight', 'PanelLength', 'PanelThickness', 'PanelMaterial', 'Openings', 'DataVBarsCount', 'DataVBarsVBars','DataHBarsCount', 'DataHBarsHBars', 'ProgramVersion']
 
 # Initialize an empty dictionary for each item
 item_dict = {key: np.nan for key in items}
