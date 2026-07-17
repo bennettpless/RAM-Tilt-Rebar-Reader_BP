@@ -122,7 +122,7 @@ def plot_verticals(v_data, v_fig, l_size=10, f_size=12):
     n = int(v_data['DataVBarsCount']/12)
     if n != 0:
         # Split the string into a list
-        parts = str(v_data['DataVBarsVBars']).split(';')
+        parts = str(v_data['DataVBarsVBars']/12).split(';')
         groups = [parts[i:i+n] for i in range(0, len(parts), n)]
         output_list = [[] for _ in range(n)]
 
@@ -170,7 +170,7 @@ def plot_horizontals(h_data, h_fig,  f_size=12):
     n = int(h_data['DataHBarsCount']/12)
     if n != 0:
         # Split the string into a list
-        parts = str(h_data['DataHBarsHBars']).split(';')
+        parts = str(h_data['DataHBarsHBars']/12).split(';')
         groups = [parts[i:i+n] for i in range(0, len(parts), n)]
         output_list = [[] for _ in range(n)]
 
